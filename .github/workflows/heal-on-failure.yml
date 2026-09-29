@@ -1,0 +1,15 @@
+name: Dispatch Healing Agent
+on:
+  workflow_dispatch:
+    inputs:
+      failure_trace:
+        required: true
+        type: string
+jobs:
+  heal:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # TODO: run agents/healing/agent.py with the failure trace
+      # TODO: open PR with proposed fix + plain-English summary, or escalate
+      - run: echo "placeholder"

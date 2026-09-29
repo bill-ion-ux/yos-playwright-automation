@@ -1,0 +1,38 @@
+describe("device_plan_02", () => {
+  it("tests device_plan_02", async () => {
+    await browser.setWindowSize(885, 946)
+    await browser.url("https://yesmy-dev.azurewebsites.net/devices/")
+    await expect(browser).toHaveUrl("https://yesmy-dev.azurewebsites.net/devices/")
+    await browser.$("//*[@id=\"device-list-section\"]/div[4]/div/div[3]/p[2]/a").click()
+    await expect(browser).toHaveUrl("https://yesshop-dev.azurewebsites.net/samsung-galaxy-z-fold-8-old-315/cart")
+    await browser.$("aria/SAMSUNG - Samsung Galaxy Z Fold 8").click()
+    await browser.$("//*[@id=\"page-main\"]/form/section/div/div/div[2]/div/section[2]/div/div[2]/div/div[3]").click()
+    await browser.$("aria/[role=\"main\"]").click()
+    await browser.$("//*[@id=\"planBox\"]/div/button/div[2]/ul/li[3]").click()
+    await browser.$("aria/NEXT").click()
+    await expect(browser).toHaveUrl("https://yesshop-dev.azurewebsites.net/samsung-galaxy-z-fold-8-old-315/verification")
+    await browser.$("#select-securityType").setValue("MYKAD")
+    await browser.$("#input-security_id").click()
+    await browser.$("#input-security_id").setValue("050313030143")
+    await browser.$("#input-name").click()
+    await browser.$("#input-name").setValue("NABIL IRFAN BIN MUHAMAD SAKOWI")
+    await browser.$("#input-contactno").click()
+    await browser.$("#input-contactno").setValue("0169056557")
+    await browser.$("#input-email").click()
+    await browser.$("#input-email").setValue("NABILIRFANSAKOWI@GMAIL.COM")
+    await browser.$("//*[@id=\"page-main\"]/form/section[2]/div/div/div/div/div[2]/div/div/div/section[1]/div[2]/div[8]").click()
+    await browser.$("//*[@id=\"page-main\"]/form/section[2]/div/div/div/div/div[2]/div/div/div/section[1]/div[2]/div[8]/div/label").click()
+    await browser.$("//*[@id=\"page-main\"]/form/section[2]/div/div/div/div/div[2]/div/div/div/section[1]/div[2]/div[9]/div/label").click()
+    await browser.$("aria/NEXT").click()
+    await expect(browser).toHaveUrl("https://yesshop-dev.azurewebsites.net/samsung-galaxy-z-fold-8-old-315/accessories")
+    await browser.$("#btn-add-to-cart").click()
+    await expect(browser).toHaveUrl("https://yesshop-dev.azurewebsites.net/samsung-galaxy-z-fold-8-old-315/delivery-addresses")
+    await browser.$("#input-address").click()
+    await browser.$("#input-address").setValue("11, Jln Pantai Sentral 3 Pantai Sentral")
+    await browser.$("#input-postcode").setValue("59200")
+    await browser.$("#btn-add-to-cart").click()
+    await browser.$("#modalOKButton").click()
+  });
+});
+//around 2-3 minutes for me to write the script using webdriverio, but it can be faster if you are familiar with the selectors and the flow of the application.
+//it could be slower if you have to work on the timing of the application, and the selectors are not stable.

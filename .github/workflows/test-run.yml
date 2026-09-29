@@ -1,0 +1,14 @@
+name: Run Playwright suite on BrowserStack
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 * * * *'
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # TODO: set up Node, install Playwright
+      # TODO: run tests/specs against BrowserStack
+      # TODO: on failure, dispatch heal-on-failure.yml with the failure trace
+      - run: echo "placeholder"

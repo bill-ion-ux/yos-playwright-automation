@@ -1,0 +1,15 @@
+name: Restructure queued scripts
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'incoming-scripts/**'
+jobs:
+  restructure:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # TODO: set up Python, install requirements.txt
+      # TODO: run agents/restructuring/agent.py against queued scripts
+      # TODO: open PR with plain-English summary for human review
+      - run: echo "placeholder"

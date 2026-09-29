@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Node
+node_modules/
+
+# Playwright
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
+.playwright/
+.playwright-cli/
+screenshots/
+
+# Local data / secrets
+*.db
+.env
+.env.*.local
+# parser/decision output can contain raw recorded args (IC numbers, passwords)
+agents/restructuring/parser/output/
+agents/restructuring/decision/output/
+
+# Logs
+*.log
+
+# OS / editor
+.DS_Store

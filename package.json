@@ -1,0 +1,19 @@
+{
+  "name": "yos-qa-automation",
+  "private": true,
+  "scripts": {
+    "test": "playwright test",
+    "test:incoming": "playwright test --project=incoming",
+    "test:restructured": "playwright test --project=restructured",
+    "parser": "tsx agents/restructuring/parser/codegen_parser.ts",
+    "decide": "tsx agents/restructuring/decision/audit.ts"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.47.0",
+    "@types/node": "^26.4.0",
+    "docx": "^9.7.2",
+    "ts-morph": "^24.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.5.0"
+  }
+}

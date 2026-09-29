@@ -1,0 +1,153 @@
+describe('<Pay and Reload automation>', () => {
+
+  /**
+   * Safe click helper
+   */
+  async function safeClick(selector, timeout = 60000) {
+    const el = await $(selector);
+    await el.waitForDisplayed({
+      timeout
+    });
+    await el.scrollIntoView({
+      block: 'center'
+    });
+    await browser.pause(300);
+    await el.click();
+  }
+
+  it('Pay & Reload – FINAL stable flow (SBI Bank A + FPX popup)', async () => {
+
+    // -------------------------------------------------
+    // SETUP
+    // -------------------------------------------------
+    await browser.setWindowSize(2732, 1198);
+    await browser.url('https://yesshop-dev.azurewebsites.net/pay-and-reload');
+
+    // -------------------------------------------------
+    // MOBILE NUMBER VERIFICATION
+    // -------------------------------------------------
+    const mobileInput = await $('#input-mobileno');
+    await mobileInput.waitForDisplayed({
+      timeout: 60000
+    });
+    await mobileInput.setValue('0189110732');
+
+    await safeClick('div.pay_form_group span'); // VERIFY
+    await browser.pause(4000); // backend validation
+
+    // -------------------------------------------------
+    // SERVICE SELECTION
+    // -------------------------------------------------
+    await safeClick('#service div div:nth-of-type(1) label:nth-of-type(1) div div div');
+    await safeClick(
+      '#service div div:nth-of-type(1) div:nth-of-type(2) div:nth-of-type(3) label.radio-checkmark'
+    );
+
+    const amountInput = await $('#postpaidAmount');
+    await amountInput.waitForDisplayed({
+      timeout: 60000
+    });
+    await amountInput.setValue('10.00');
+    await browser.keys('Tab');
+    await browser.pause(1200);
+
+    // -------------------------------------------------
+    // NEXT
+    // -------------------------------------------------
+    await safeClick('#service div div:nth-of-type(1) div:nth-of-type(2) > button');
+
+    await browser.waitUntil(
+      async () => (await browser.getUrl()).includes('/pay-and-reload/payment'), {
+        timeout: 60000,
+        timeoutMsg: 'NEXT clicked but payment page did not load'
+      }
+    );
+
+    // -------------------------------------------------
+    // PAYMENT PAGE – ONLINE BANKING
+    // -------------------------------------------------
+    await safeClick('div:nth-of-type(3) > label.radio-checkmark');
+
+    // -------------------------------------------------
+    // BANK SELECTION — SBI BANK A (KEYBOARD AUTOCOMPLETE)
+    // -------------------------------------------------
+    const bankInput = await $('#select-bank');
+    await bankInput.waitForDisplayed({
+      timeout: 60000
+    });
+    await bankInput.scrollIntoView({
+      block: 'center'
+    });
+
+    // Focus + filter list
+    await bankInput.click();
+    await browser.pause(300);
+    await browser.keys('SBI');
+    await browser.pause(600);
+
+    // Select first filtered option (SBI Bank A)
+    await browser.keys(['ArrowDown']);
+    await browser.keys(['Enter']);
+    await browser.pause(1000);
+
+    // Validate using PAY NOW enabled
+    const payNowBtn = await $('section.layer-section button');
+    if ((await payNowBtn.getAttribute('disabled')) !== null) {
+      throw new Error('SBI Bank A not selected — PAY NOW still disabled');
+    }
+
+    // -------------------------------------------------
+    // PAY NOW
+    // -------------------------------------------------
+    await payNowBtn.click();
+
+    // -------------------------------------------------
+    // FPX SIMULATOR
+    // -------------------------------------------------
+    await browser.switchWindow('simulator.fpx.uat.inet.paynet.my');
+
+    // Login
+    await $('#userId').waitForDisplayed({
+      timeout: 60000
+    });
+    await $('#userId').setValue('1234');
+    await $('#password').setValue('1234');
+    await safeClick('button:nth-of-type(1)'); // Sign In
+
+    // Confirm account
+    await safeClick('form button:nth-of-type(1)'); // Confirm
+
+    // -------------------------------------------------
+    // ✅ HANDLE "CHANGE YOUR PASSWORD" POPUP (REAL FIX)
+    // NOTE: This is NOT a DOM element — must use ENTER
+    // -------------------------------------------------
+    await browser.pause(2500);
+    await browser.keys(['Enter']); // safely dismiss popup if present
+    await browser.pause(1200);
+
+    // -------------------------------------------------
+    // CONTINUE WITH TRANSACTION (LONG WAIT)
+    // -------------------------------------------------
+    const continueBtn = await $('input[type="button"]');
+    await continueBtn.waitForDisplayed({
+      timeout: 80000
+    });
+    await continueBtn.click();
+
+    // -------------------------------------------------
+    // WAIT FOR ORDER COMPLETION / RETURN PAGE
+    // -------------------------------------------------
+    await browser.waitUntil(
+      async () => {
+        const url = await browser.getUrl();
+        return url.includes('success') ||
+          url.includes('confirmation') ||
+          url.includes('order');
+      }, {
+        timeout: 80000,
+        timeoutMsg: 'Order completion page did not load after FPX transaction'
+      }
+    );
+  });
+});
+``
